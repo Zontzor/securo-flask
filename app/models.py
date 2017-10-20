@@ -49,7 +49,7 @@ def load_user(user_id):
     def __repr__(self):
         return '<User: {}>'.format(self.name)
 
-class photo(db.Model):
+class Photo(db.Model):
     """
     Create a photo table
     """
