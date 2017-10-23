@@ -4,7 +4,7 @@ import os
 
 from app import create_app
 
-# Get flask config specified in .env file
+# Get flask config specified in enviroment variable
 config_name = os.getenv('FLASK_CONFIG')
 app = create_app(config_name)
 
