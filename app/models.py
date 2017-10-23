@@ -1,53 +1,6 @@
-from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+# app/models.py
 
-from app import db, login_manager
-
-class User(UserMixin, db.Model):
-    """
-    Create an user table
-    """
-
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(60), index=True, unique=True)
-    username = db.Column(db.String(60), index=True, unique=True)
-    first_name = db.Column(db.String(60), index=True)
-    last_name = db.Column(db.String(60), index=True)
-    password_hash = db.Column(db.String(128))
-    is_admin = db.Column(db.Boolean, default=False)
-
-    @property
-    def password(self):
-        """
-        Prevent password from being accessed
-        """
-        raise AttributeError('password is not a readable attribute.')
-
-    @password.setter
-    def password(self, password):
-        """
-        Set password to a hashed password
-        """
-        self.password_hash = generate_password_hash(password)
-
-    def verify_password(self, password):
-        """
-        Check if hashed password matches actual password
-        """
-        return check_password_hash(self.password_hash, password)
-
-    def __repr__(self):
-        return '<User: {}>'.format(self.username)
-
-# Set up user_loader
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-    def __repr__(self):
-        return '<User: {}>'.format(self.name)
+from app import db
 
 class Photo(db.Model):
     """
@@ -58,3 +11,28 @@ class Photo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(60), index=True, unique=True)
+    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
+    date_modified = db.Column(
+        db.DateTime, default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp())
+
+    def __init__(self, name):
+        """
+        initialize with filename
+        """
+        self.filename = filename
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_all():
+        return Photo.query.all()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return "<Photo: {}>".format(self.name)
