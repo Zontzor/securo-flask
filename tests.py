@@ -1,5 +1,5 @@
 # tests.py
-# Run with python 'tests.py'
+# Run with 'python tests.py'
 
 import unittest
 import os
