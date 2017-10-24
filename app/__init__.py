@@ -59,4 +59,41 @@ def create_app(config_name):
             response.status_code = 200
             return response
 
+    @app.route('/photos/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+    def photo_manipulation(id, **kwargs):
+     # retrieve a buckelist using it's ID
+        photo = Photo.query.filter_by(id=id).first()
+        if not photo:
+            # Raise an HTTPException with a 404 not found status code
+            abort(404)
+
+        if request.method == 'DELETE':
+            photo.delete()
+            return {
+            "message": "photo {} deleted successfully".format(photo.id)
+         }, 200
+
+        elif request.method == 'PUT':
+            filename = str(request.data.get('filename', ''))
+            photo.filename = filename
+            photo.save()
+            response = jsonify({
+                'id': photo.id,
+                'filename': photo.filename,
+                'date_created': photo.date_created,
+                'date_modified': photo.date_modified
+            })
+            response.status_code = 200
+            return response
+        else:
+            # GET
+            response = jsonify({
+                'id': photo.id,
+                'filename': photo.filename,
+                'date_created': photo.date_created,
+                'date_modified': photo.date_modified
+            })
+            response.status_code = 200
+            return response
+
     return app
