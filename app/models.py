@@ -16,7 +16,7 @@ class Photo(db.Model):
         db.DateTime, default=db.func.current_timestamp(),
         onupdate=db.func.current_timestamp())
 
-    def __init__(self, name):
+    def __init__(self, filename):
         """
         initialize with filename
         """
