@@ -12,7 +12,7 @@ class TestBase(unittest.TestCase):
 
     def setUp(self):
         """
-        Will be called before every test
+        Define test variables and initialize app
         """
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client
