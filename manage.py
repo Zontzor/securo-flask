@@ -1,5 +1,9 @@
 # manage.py
 
+# initialize migrations: python manage.py db init
+# run migrations: python manage.py db migrate
+# apply migrations: python manage.py db upgrade
+
 import os
 
 # third-party imports
