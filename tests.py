@@ -1,36 +1,36 @@
 # tests.py
+
 # Run with 'python tests.py'
 
 import unittest
 import os
-
-from flask import abort, url_for
-from flask_testing import TestCase
+import json
 
 from app import create_app, db
-from app.models import Photo
 
-class TestBase(TestCase):
-
-    def create_app(self):
-
-        # pass in test configurations
-        config_name = 'testing'
-        app = create_app(config_name)
-        app.config.update(
-            SQLALCHEMY_DATABASE_URI='mysql://alex:test12345@localhost/securo_test'
-        )
-        return app
+class TestBase(unittest.TestCase):
 
     def setUp(self):
         """
         Will be called before every test
         """
+        self.app = create_app(config_name="testing")
+        self.client = self.app.test_client
+        self.photo = {'filename': '20170901090000'}
+
+        # binds the app to the current context
+        with self.app.app_context():
+            # create all tables
+            db.create_all()
 
     def tearDown(self):
         """
         Will be called after every test
         """
+        with self.app.app_context():
+            # drop all tables
+            db.session.remove()
+            db.drop_all()
 
 if __name__ == '__main__':
     unittest.main()
